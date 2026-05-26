@@ -383,7 +383,19 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           fogNear: { value: fog.near },
           fogFar: { value: fog.far }
         };
-        this.clock = new THREE.Clock();
+        this.clock = {
+          startTime: performance.now(),
+          lastTime: performance.now(),
+          get elapsedTime() {
+            return (performance.now() - this.startTime) / 1000;
+          },
+          getDelta: function() {
+            const now = performance.now();
+            const delta = (now - this.lastTime) / 1000;
+            this.lastTime = now;
+            return delta;
+          }
+        };
         this.assets = {};
         this.disposed = false;
 
@@ -1080,7 +1092,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
         const material = new THREE.ShaderMaterial({
           fragmentShader: isRoad ? roadFragment : islandFragment,
-          vertexShader: roadVertex,
+          vertexShader: isRoad ? roadVertex : islandVertex,
           side: THREE.DoubleSide,
           uniforms: Object.assign(uniforms, this.webgl.fogUniforms, options.distortion.uniforms)
         });
@@ -1185,6 +1197,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         ${THREE.ShaderChunk['fog_vertex']}
       }
     `;
+
+    const islandVertex = roadVertex
+      .replace('varying vec2 vUv;', '')
+      .replace('vUv = uv;', '');
 
     function resizeRendererToDisplaySize(renderer, setSize) {
       const canvas = renderer.domElement;
