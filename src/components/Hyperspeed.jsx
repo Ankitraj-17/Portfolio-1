@@ -1142,7 +1142,9 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
     const islandFragment = roadBaseFragment
       .replace('#include <roadMarkings_fragment>', '')
-      .replace('#include <roadMarkings_vars>', '');
+      .replace('#include <roadMarkings_vars>', '')
+      .replace('varying vec2 vUv;', '')
+      .replace('vec2 uv = vUv;', '');
 
     const roadMarkings_vars = `
       uniform float uLanes;
