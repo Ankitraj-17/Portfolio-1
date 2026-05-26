@@ -36,48 +36,64 @@ const Experience = () => {
   const ref = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Timeline Line self-drawing
-      const path = document.querySelector('.timeline-draw-path');
-      if (path) {
-        const length = path.getTotalLength();
-        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top 35%',
-            end: 'bottom 78%',
-            scrub: 1,
-          }
-        });
-      }
+    let ctx;
+    let isCleanedUp = false;
 
-      // Highly optimized side-slide and rotational settle reveal
-      gsap.utils.toArray('.exp-card').forEach((card, index) => {
-        const isEven = index % 2 === 0;
-        const targetRot = isEven ? -2 : 2;
-        
-        gsap.fromTo(card,
-          { opacity: 0, x: isEven ? -80 : 80, rotate: isEven ? -8 : 8 },
-          {
-            opacity: 1,
-            x: 0,
-            rotate: targetRot,
-            duration: 0.8,
-            ease: 'power2.out',
+    const initExperience = () => {
+      if (isCleanedUp) return;
+      ctx = gsap.context(() => {
+        // Timeline Line self-drawing
+        const path = document.querySelector('.timeline-draw-path');
+        if (path) {
+          const length = path.getTotalLength();
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            ease: 'none',
             scrollTrigger: {
-              trigger: card,
-              start: 'top 92%',
-              toggleActions: 'play none none none',
+              trigger: ref.current,
+              start: 'top 35%',
+              end: 'bottom 78%',
+              scrub: 1,
             }
-          }
-        );
-      });
-    }, ref);
+          });
+        }
 
-    return () => ctx.revert();
+        // Highly optimized side-slide and rotational settle reveal
+        gsap.utils.toArray('.exp-card').forEach((card, index) => {
+          const isEven = index % 2 === 0;
+          const targetRot = isEven ? -2 : 2;
+          
+          gsap.fromTo(card,
+            { opacity: 0, x: isEven ? -80 : 80, rotate: isEven ? -8 : 8 },
+            {
+              opacity: 1,
+              x: 0,
+              rotate: targetRot,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 92%',
+                toggleActions: 'play none none none',
+              }
+            }
+          );
+        });
+      }, ref);
+    };
+
+    if (document.readyState === 'complete') {
+      initExperience();
+    } else {
+      window.addEventListener('load', initExperience);
+    }
+
+    return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initExperience);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (

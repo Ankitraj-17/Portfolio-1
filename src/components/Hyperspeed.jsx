@@ -1216,21 +1216,39 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
       return needResize;
     }
 
-    const container = hyperspeed.current;
-    if (!container) return;
+    let myApp = null;
+    let isCleanedUp = false;
 
-    const options = {
-      ...DEFAULT_EFFECT_OPTIONS,
-      ...effectOptions,
-      colors: { ...DEFAULT_EFFECT_OPTIONS.colors, ...effectOptions.colors }
+    const initHyperspeed = () => {
+      if (isCleanedUp) return;
+      const container = hyperspeed.current;
+      if (!container) return;
+
+      const options = {
+        ...DEFAULT_EFFECT_OPTIONS,
+        ...effectOptions,
+        colors: { ...DEFAULT_EFFECT_OPTIONS.colors, ...effectOptions.colors }
+      };
+      options.distortion = distortions[options.distortion];
+
+      myApp = new App(container, options);
+      appRef.current = myApp;
+      myApp.loadAssets().then(() => {
+        if (!isCleanedUp) {
+          myApp.init();
+        }
+      });
     };
-    options.distortion = distortions[options.distortion];
 
-    const myApp = new App(container, options);
-    appRef.current = myApp;
-    myApp.loadAssets().then(myApp.init);
+    if (document.readyState === 'complete') {
+      requestAnimationFrame(initHyperspeed);
+    } else {
+      window.addEventListener('load', initHyperspeed);
+    }
 
     return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initHyperspeed);
       if (appRef.current) {
         appRef.current.dispose();
         appRef.current = null;

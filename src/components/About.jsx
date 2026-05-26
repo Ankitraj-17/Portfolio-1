@@ -122,35 +122,51 @@ const About = () => {
   const [activeTab, setActiveTab] = useState('mindset');
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Title Animation
-      gsap.fromTo(
-        '.about-title-anim',
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          stagger: 0.1,
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 90%' },
-        }
-      );
+    let ctx;
+    let isCleanedUp = false;
 
-      // 2. Polaroid Portrait scroll parallax
-      gsap.to('.about-polaroid-parallax', {
-        y: -40,
-        rotate: 3,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        }
-      });
-    }, sectionRef);
+    const initAbout = () => {
+      if (isCleanedUp) return;
+      ctx = gsap.context(() => {
+        // 1. Title Animation
+        gsap.fromTo(
+          '.about-title-anim',
+          { opacity: 0, y: 60 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            stagger: 0.1,
+            scrollTrigger: { trigger: sectionRef.current, start: 'top 90%' },
+          }
+        );
 
-    return () => ctx.revert();
+        // 2. Polaroid Portrait scroll parallax
+        gsap.to('.about-polaroid-parallax', {
+          y: -40,
+          rotate: 3,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          }
+        });
+      }, sectionRef);
+    };
+
+    if (document.readyState === 'complete') {
+      initAbout();
+    } else {
+      window.addEventListener('load', initAbout);
+    }
+
+    return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initAbout);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   // Slide & scale spring reveal when switching tabs

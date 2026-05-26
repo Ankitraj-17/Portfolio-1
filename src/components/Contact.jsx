@@ -11,25 +11,41 @@ const Contact = () => {
   const [formState, setFormState] = useState('idle'); // idle, submitting, success
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Reveal animations for the new layout
-      gsap.fromTo('.contact-anim', 
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1, 
-          y: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top 85%',
-          }
-        }
-      );
-    }, ref);
+    let ctx;
+    let isCleanedUp = false;
 
-    return () => ctx.revert();
+    const initContact = () => {
+      if (isCleanedUp) return;
+      ctx = gsap.context(() => {
+        // Reveal animations for the new layout
+        gsap.fromTo('.contact-anim', 
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1, 
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: ref.current,
+              start: 'top 85%',
+            }
+          }
+        );
+      }, ref);
+    };
+
+    if (document.readyState === 'complete') {
+      initContact();
+    } else {
+      window.addEventListener('load', initContact);
+    }
+
+    return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initContact);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   const triggerConfetti = () => {

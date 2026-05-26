@@ -76,316 +76,326 @@ const Hero = () => {
   }, []);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    let ctx;
+    let animationFrameId;
+    let resizeListener;
+    let mouseMoveListener;
+    let mouseLeaveListener;
+    let canvasObserver;
+    let boundsListeners = [];
+    let isCleanedUp = false;
 
-      // Staggered 3D reveal animation for ANKITRAJ Jha.
-      tl.fromTo('.hero-title-char', 
-        { y: 140, rotateX: -100, rotateY: 25, opacity: 0, scale: 0.75, transformOrigin: '50% 50% -150px' },
-        { y: 0, rotateX: 0, rotateY: 0, opacity: 1, scale: 1, duration: 1.6, stagger: 0.05, ease: 'back.out(1.5)' },
-        0.2
-      )
-      .fromTo('.hero-subtitle', 
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 1.1 }, 
-        0.7
-      )
-      .fromTo('.hero-ctas',
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.9 },
-        0.9
-      )
-      .fromTo('.hero-sidebar-widget',
-        { opacity: 0, x: (i) => i === 0 ? -60 : 60 },
-        { opacity: 1, x: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' },
-        0.8
-      );
+    const initHero = () => {
+      if (isCleanedUp) return;
 
-      // Scroll Parallax for text container — scrub: true synchronizes animations tightly with scroll position for instant response
-      gsap.to('.hero-text-container', {
-        y: -120,
-        opacity: 0.1,
-        scale: 0.95,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        }
-      });
+      ctx = gsap.context(() => {
+        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-      // Scroll Parallax for side columns - scrub: true prevents delay / slugishness
-      gsap.fromTo('.hero-sidebar-widget',
-        { opacity: 1, y: 0 },
-        {
-          y: -180,
+        // Staggered 3D reveal animation for ANKITRAJ Jha.
+        tl.fromTo('.hero-title-char', 
+          { y: 140, rotateX: -100, rotateY: 25, opacity: 0, scale: 0.75, transformOrigin: '50% 50% -150px' },
+          { y: 0, rotateX: 0, rotateY: 0, opacity: 1, scale: 1, duration: 1.6, stagger: 0.05, ease: 'back.out(1.5)' },
+          0.2
+        )
+        .fromTo('.hero-subtitle', 
+          { opacity: 0, y: 35 },
+          { opacity: 1, y: 0, duration: 1.1 }, 
+          0.7
+        )
+        .fromTo('.hero-ctas',
+          { opacity: 0, y: 35 },
+          { opacity: 1, y: 0, duration: 0.9 },
+          0.9
+        )
+        .fromTo('.hero-sidebar-widget',
+          { opacity: 0, x: (i) => i === 0 ? -60 : 60 },
+          { opacity: 1, x: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' },
+          0.8
+        );
+
+        // Scroll Parallax for text container — scrub: true synchronizes animations tightly with scroll position for instant response
+        gsap.to('.hero-text-container', {
+          y: -120,
           opacity: 0.1,
+          scale: 0.95,
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: true,
           }
-        }
-      );
-
-    }, heroRef);
-
-    // Canvas Retro Tech Grid and Spotlight
-    const canvas = canvasRef.current;
-    let animationFrameId;
-    let resizeListener;
-    let mouseMoveListener;
-    let mouseLeaveListener;
-    let canvasObserver;
-    let canvasPaused = false;
-
-    if (canvas) {
-      const canvasCtx = canvas.getContext('2d');
-
-      canvasObserver = new IntersectionObserver(([entry]) => {
-        canvasPaused = !entry.isIntersecting;
-      }, { threshold: 0 });
-      canvasObserver.observe(canvas);
-      
-      const resizeCanvas = () => {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-      };
-      resizeCanvas();
-      
-      resizeListener = () => resizeCanvas();
-      window.addEventListener('resize', resizeListener);
-
-      let mouse = { x: -1000, y: -1000, active: false };
-
-      mouseMoveListener = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-        mouse.active = true;
-      };
-
-      mouseLeaveListener = () => {
-        mouse.active = false;
-      };
-
-      window.addEventListener('mousemove', mouseMoveListener);
-      document.body.addEventListener('mouseleave', mouseLeaveListener);
-
-      // Delicate Floating Tech Particles (plus symbols & circles)
-      const particleCount = 18;
-      const particles = [];
-      const chars = ['+', '○', '•', '+'];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height + canvas.height,
-          size: Math.random() * 8 + 6,
-          char: chars[Math.floor(Math.random() * chars.length)],
-          speedY: Math.random() * 0.35 + 0.15,
-          speedX: Math.random() * 0.2 - 0.1,
-          opacity: Math.random() * 0.25 + 0.08,
-          rotation: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.008,
         });
-      }
 
-      const draw = () => {
-        if (!canvas || !canvasCtx) return;
-
-        if (canvasPaused) {
-          animationFrameId = requestAnimationFrame(draw);
-          return;
-        }
-
-        const w = canvas.width;
-        const h = canvas.height;
-        canvasCtx.clearRect(0, 0, w, h);
-
-        const gridSize = 64;
-        const isDark = document.documentElement.classList.contains('dark');
-        const colorBase = isDark ? '255, 255, 255' : '28, 26, 23';
-        const lineAccent = isDark ? '185, 43, 39' : '138, 28, 28';
-
-        // 1. Draw Spotlight (radial ambient cursor glow)
-        if (mouse.active) {
-          const gradient = canvasCtx.createRadialGradient(
-            mouse.x, mouse.y, 0,
-            mouse.x, mouse.y, 350
-          );
-          if (isDark) {
-            gradient.addColorStop(0, 'rgba(185, 43, 39, 0.09)'); // Glowing Red
-            gradient.addColorStop(0.5, 'rgba(242, 186, 73, 0.02)'); // Glowing Gold
-          } else {
-            gradient.addColorStop(0, 'rgba(138, 28, 28, 0.07)'); // Soft Red
-            gradient.addColorStop(0.5, 'rgba(179, 128, 0, 0.018)'); // Soft Gold
+        // Scroll Parallax for side columns - scrub: true prevents delay / slugishness
+        gsap.fromTo('.hero-sidebar-widget',
+          { opacity: 1, y: 0 },
+          {
+            y: -180,
+            opacity: 0.1,
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            }
           }
-          gradient.addColorStop(1, 'transparent');
-          canvasCtx.fillStyle = gradient;
-          canvasCtx.fillRect(0, 0, w, h);
+        );
+
+      }, heroRef);
+
+      // Canvas Retro Tech Grid and Spotlight
+      const canvas = canvasRef.current;
+      let canvasPaused = false;
+
+      if (canvas) {
+        const canvasCtx = canvas.getContext('2d');
+
+        canvasObserver = new IntersectionObserver(([entry]) => {
+          canvasPaused = !entry.isIntersecting;
+        }, { threshold: 0 });
+        canvasObserver.observe(canvas);
+        
+        const resizeCanvas = () => {
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
+        };
+        resizeCanvas();
+        
+        resizeListener = () => resizeCanvas();
+        window.addEventListener('resize', resizeListener);
+
+        let mouse = { x: -1000, y: -1000, active: false };
+
+        mouseMoveListener = (e) => {
+          const rect = canvas.getBoundingClientRect();
+          mouse.x = e.clientX - rect.left;
+          mouse.y = e.clientY - rect.top;
+          mouse.active = true;
+        };
+
+        mouseLeaveListener = () => {
+          mouse.active = false;
+        };
+
+        window.addEventListener('mousemove', mouseMoveListener);
+        document.body.addEventListener('mouseleave', mouseLeaveListener);
+
+        // Delicate Floating Tech Particles (plus symbols & circles)
+        const particleCount = 18;
+        const particles = [];
+        const chars = ['+', '○', '•', '+'];
+        for (let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height + canvas.height,
+            size: Math.random() * 8 + 6,
+            char: chars[Math.floor(Math.random() * chars.length)],
+            speedY: Math.random() * 0.35 + 0.15,
+            speedX: Math.random() * 0.2 - 0.1,
+            opacity: Math.random() * 0.25 + 0.08,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.008,
+          });
         }
 
-        // 2. Draw Retro Grid lines (extremely faint dark grid)
-        canvasCtx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.015)' : 'rgba(28, 26, 23, 0.025)';
-        canvasCtx.lineWidth = 1;
+        const draw = () => {
+          if (!canvas || !canvasCtx) return;
 
-        for (let x = 0; x < w; x += gridSize) {
-          canvasCtx.beginPath();
-          canvasCtx.moveTo(x, 0);
-          canvasCtx.lineTo(x, h);
-          canvasCtx.stroke();
-        }
+          if (canvasPaused) {
+            animationFrameId = requestAnimationFrame(draw);
+            return;
+          }
 
-        for (let y = 0; y < h; y += gridSize) {
-          canvasCtx.beginPath();
-          canvasCtx.moveTo(0, y);
-          canvasCtx.lineTo(w, y);
-          canvasCtx.stroke();
-        }
+          const w = canvas.width;
+          const h = canvas.height;
+          canvasCtx.clearRect(0, 0, w, h);
 
-        // 3. Draw Grid Intersection Dots
-        for (let x = 0; x < w; x += gridSize) {
+          const gridSize = 64;
+          const isDark = document.documentElement.classList.contains('dark');
+          const colorBase = isDark ? '255, 255, 255' : '28, 26, 23';
+          const lineAccent = isDark ? '185, 43, 39' : '138, 28, 28';
+
+          // 1. Draw Spotlight (radial ambient cursor glow)
+          if (mouse.active) {
+            const gradient = canvasCtx.createRadialGradient(
+              mouse.x, mouse.y, 0,
+              mouse.x, mouse.y, 350
+            );
+            if (isDark) {
+              gradient.addColorStop(0, 'rgba(185, 43, 39, 0.09)'); // Glowing Red
+              gradient.addColorStop(0.5, 'rgba(242, 186, 73, 0.02)'); // Glowing Gold
+            } else {
+              gradient.addColorStop(0, 'rgba(138, 28, 28, 0.07)'); // Soft Red
+              gradient.addColorStop(0.5, 'rgba(179, 128, 0, 0.018)'); // Soft Gold
+            }
+            gradient.addColorStop(1, 'transparent');
+            canvasCtx.fillStyle = gradient;
+            canvasCtx.fillRect(0, 0, w, h);
+          }
+
+          // 2. Draw Retro Grid lines
+          canvasCtx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.015)' : 'rgba(28, 26, 23, 0.025)';
+          canvasCtx.lineWidth = 1;
+
+          for (let x = 0; x < w; x += gridSize) {
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(x, 0);
+            canvasCtx.lineTo(x, h);
+            canvasCtx.stroke();
+          }
+
           for (let y = 0; y < h; y += gridSize) {
-            let opacity = 0.04;
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(0, y);
+            canvasCtx.lineTo(w, y);
+            canvasCtx.stroke();
+          }
+
+          // 3. Draw Grid Intersection Dots
+          for (let x = 0; x < w; x += gridSize) {
+            for (let y = 0; y < h; y += gridSize) {
+              let opacity = 0.04;
+              if (mouse.active) {
+                const dx = mouse.x - x;
+                const dy = mouse.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 180) {
+                  opacity += (1 - dist / 180) * 0.12;
+                }
+              }
+              canvasCtx.fillStyle = `rgba(${colorBase}, ${opacity})`;
+              canvasCtx.beginPath();
+              canvasCtx.arc(x, y, 1.2, 0, Math.PI * 2);
+              canvasCtx.fill();
+            }
+          }
+
+          // 4. Draw & Update Floating Particles
+          const scrollY = window.scrollY;
+          const warpFactor = 1 + (scrollY * 0.012);
+
+          particles.forEach(p => {
             if (mouse.active) {
-              const dx = mouse.x - x;
-              const dy = mouse.y - y;
+              const dx = p.x - mouse.x;
+              const dy = p.y - mouse.y;
               const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist < 180) {
-                opacity += (1 - dist / 180) * 0.12;
+              if (dist < 140) {
+                const force = (140 - dist) / 140;
+                const angle = Math.atan2(dy, dx);
+                p.x += Math.cos(angle) * force * 1.8;
+                p.y += Math.sin(angle) * force * 1.8;
               }
             }
-            canvasCtx.fillStyle = `rgba(${colorBase}, ${opacity})`;
-            canvasCtx.beginPath();
-            canvasCtx.arc(x, y, 1.2, 0, Math.PI * 2);
-            canvasCtx.fill();
-          }
-        }
 
-        // 4. Draw & Update Floating Particles
-        const scrollY = window.scrollY;
-        // As user scrolls down, speed and vertical stretch factor increase
-        const warpFactor = 1 + (scrollY * 0.012);
+            p.y -= p.speedY * warpFactor;
+            p.x += p.speedX;
+            p.rotation += p.rotSpeed;
 
-        particles.forEach(p => {
-          // Repel from mouse slightly
-          if (mouse.active) {
-            const dx = p.x - mouse.x;
-            const dy = p.y - mouse.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 140) {
-              const force = (140 - dist) / 140;
-              const angle = Math.atan2(dy, dx);
-              p.x += Math.cos(angle) * force * 1.8;
-              p.y += Math.sin(angle) * force * 1.8;
+            if (p.y < -30) {
+              p.y = h + 30;
+              p.x = Math.random() * w;
+            }
+            if (p.x < -30) p.x = w + 30;
+            if (p.x > w + 30) p.x = -30;
+
+            canvasCtx.save();
+            canvasCtx.translate(p.x, p.y);
+            canvasCtx.scale(1, warpFactor > 1.15 ? warpFactor * 0.85 : 1);
+            canvasCtx.rotate(p.rotation);
+            canvasCtx.font = '10px monospace';
+            canvasCtx.fillStyle = `rgba(${colorBase}, ${Math.min(0.7, p.opacity * (1 + scrollY * 0.002))})`;
+            canvasCtx.fillText(p.char, -3, 3);
+            canvasCtx.restore();
+          });
+
+          // 4b. Draw delicate interconnected constellation lines
+          canvasCtx.lineWidth = 0.5;
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const p1 = particles[i];
+              const p2 = particles[j];
+              const dx = p1.x - p2.x;
+              const dy = p1.y - p2.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < 110) {
+                const alpha = (1 - dist / 110) * 0.12;
+                canvasCtx.strokeStyle = `rgba(${lineAccent}, ${alpha})`;
+                canvasCtx.beginPath();
+                canvasCtx.moveTo(p1.x, p1.y);
+                canvasCtx.lineTo(p2.x, p2.y);
+                canvasCtx.stroke();
+              }
             }
           }
 
-          // Scale velocity with scroll warp
-          p.y -= p.speedY * warpFactor;
-          p.x += p.speedX;
-          p.rotation += p.rotSpeed;
+          animationFrameId = requestAnimationFrame(draw);
+        };
+        draw();
+      }
 
-          // Wrap boundaries
-          if (p.y < -30) {
-            p.y = h + 30;
-            p.x = Math.random() * w;
-          }
-          if (p.x < -30) p.x = w + 30;
-          if (p.x > w + 30) p.x = -30;
+      // 5. Magnetic CTA Button physics
+      const magneticButtons = document.querySelectorAll('.btn-magnetic');
 
-          canvasCtx.save();
-          canvasCtx.translate(p.x, p.y);
-          // Scale vertical dimension to simulate warp stretch on scroll
-          canvasCtx.scale(1, warpFactor > 1.15 ? warpFactor * 0.85 : 1);
-          canvasCtx.rotate(p.rotation);
-          canvasCtx.font = '10px monospace';
-          // Make particles more visible under active warp speeds
-          canvasCtx.fillStyle = `rgba(${colorBase}, ${Math.min(0.7, p.opacity * (1 + scrollY * 0.002))})`;
-          canvasCtx.fillText(p.char, -3, 3);
-          canvasCtx.restore();
-        });
-
-        // 4b. Draw delicate interconnected constellation lines
-        canvasCtx.lineWidth = 0.5;
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const p1 = particles[i];
-            const p2 = particles[j];
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 110) {
-              const alpha = (1 - dist / 110) * 0.12;
-              canvasCtx.strokeStyle = `rgba(${lineAccent}, ${alpha})`;
-              canvasCtx.beginPath();
-              canvasCtx.moveTo(p1.x, p1.y);
-              canvasCtx.lineTo(p2.x, p2.y);
-              canvasCtx.stroke();
-            }
-          }
-        }
-
-        animationFrameId = requestAnimationFrame(draw);
-      };
-      draw();
-    }
-
-    // 5. Magnetic CTA Button physics
-    const magneticButtons = document.querySelectorAll('.btn-magnetic');
-    const boundsListeners = [];
-
-    magneticButtons.forEach(btn => {
-      const boundMove = (e) => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        
-        gsap.to(btn, {
-          x: x * 0.38,
-          y: y * 0.38,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-        
-        const innerText = btn.querySelector('.btn-magnetic-inner');
-        if (innerText) {
-          gsap.to(innerText, {
-            x: x * 0.18,
-            y: y * 0.18,
+      magneticButtons.forEach(btn => {
+        const boundMove = (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          gsap.to(btn, {
+            x: x * 0.38,
+            y: y * 0.38,
             duration: 0.3,
             ease: 'power2.out'
           });
-        }
-      };
+          
+          const innerText = btn.querySelector('.btn-magnetic-inner');
+          if (innerText) {
+            gsap.to(innerText, {
+              x: x * 0.18,
+              y: y * 0.18,
+              duration: 0.3,
+              ease: 'power2.out'
+            });
+          }
+        };
 
-      const boundLeave = () => {
-        gsap.to(btn, {
-          x: 0,
-          y: 0,
-          duration: 0.6,
-          ease: 'elastic.out(1.1, 0.4)'
-        });
-        const innerText = btn.querySelector('.btn-magnetic-inner');
-        if (innerText) {
-          gsap.to(innerText, {
+        const boundLeave = () => {
+          gsap.to(btn, {
             x: 0,
             y: 0,
             duration: 0.6,
             ease: 'elastic.out(1.1, 0.4)'
           });
-        }
-      };
+          
+          const innerText = btn.querySelector('.btn-magnetic-inner');
+          if (innerText) {
+            gsap.to(innerText, {
+              x: 0,
+              y: 0,
+              duration: 0.6,
+              ease: 'elastic.out(1.1, 0.4)'
+            });
+          }
+        };
 
-      btn.addEventListener('mousemove', boundMove);
-      btn.addEventListener('mouseleave', boundLeave);
-      boundsListeners.push({ btn, boundMove, boundLeave });
-    });
+        btn.addEventListener('mousemove', boundMove);
+        btn.addEventListener('mouseleave', boundLeave);
+        boundsListeners.push({ btn, boundMove, boundLeave });
+      });
+    };
+
+    if (document.readyState === 'complete') {
+      initHero();
+    } else {
+      window.addEventListener('load', initHero);
+    }
 
     return () => {
-      ctx.revert();
+      isCleanedUp = true;
+      window.removeEventListener('load', initHero);
+      if (ctx) ctx.revert();
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       if (resizeListener) window.removeEventListener('resize', resizeListener);
       if (mouseMoveListener) window.removeEventListener('mousemove', mouseMoveListener);

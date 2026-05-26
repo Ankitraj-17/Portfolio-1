@@ -389,63 +389,79 @@ const Projects = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray('.proj-row').forEach((row, i) => {
-        // Screen Parallax inside Browser
-        const img = row.querySelector('.project-img');
-        if (img) {
-          gsap.fromTo(img,
-            { yPercent: 0 },
-            {
-              yPercent: -18,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: row,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 1,
+    let ctx;
+    let isCleanedUp = false;
+
+    const initProjects = () => {
+      if (isCleanedUp) return;
+      ctx = gsap.context(() => {
+        gsap.utils.toArray('.proj-row').forEach((row, i) => {
+          // Screen Parallax inside Browser
+          const img = row.querySelector('.project-img');
+          if (img) {
+            gsap.fromTo(img,
+              { yPercent: 0 },
+              {
+                yPercent: -18,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: row,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 1,
+                }
               }
-            }
-          );
-        }
+            );
+          }
 
-        // Horizontal Sliding Watermarks
-        const watermark = row.querySelector('.proj-num-watermark');
-        if (watermark) {
-          gsap.fromTo(watermark,
-            { x: -50, rotate: -2 },
-            {
-              x: 80,
-              rotate: 2,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: row,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 1,
+          // Horizontal Sliding Watermarks
+          const watermark = row.querySelector('.proj-num-watermark');
+          if (watermark) {
+            gsap.fromTo(watermark,
+              { x: -50, rotate: -2 },
+              {
+                x: 80,
+                rotate: 2,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: row,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 1,
+                }
               }
-            }
-          );
-        }
-      });
+            );
+          }
+        });
 
-      gsap.fromTo(
-        '.proj-header-text',
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 95%',
-          },
-        }
-      );
-    }, sectionRef);
+        gsap.fromTo(
+          '.proj-header-text',
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 95%',
+            },
+          }
+        );
+      }, sectionRef);
+    };
 
-    return () => ctx.revert();
+    if (document.readyState === 'complete') {
+      initProjects();
+    } else {
+      window.addEventListener('load', initProjects);
+    }
+
+    return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initProjects);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (

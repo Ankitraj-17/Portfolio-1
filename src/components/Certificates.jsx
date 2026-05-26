@@ -15,23 +15,36 @@ const Certificates = () => {
   const displayedCertificates = myCertificates.slice(0, 6);
 
   useEffect(() => {
-    // Parallax logic for background elements
-    const ctx = gsap.context(() => {
-      gsap.to('.cert-watermark', {
-        y: -150,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
+    let ctx;
+    let isCleanedUp = false;
 
-      // We rely on .scroll-card-reveal logic in useAppLogic for individual cards
-    }, sectionRef);
+    const initCertificates = () => {
+      if (isCleanedUp) return;
+      ctx = gsap.context(() => {
+        gsap.to('.cert-watermark', {
+          y: -150,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }, sectionRef);
+    };
 
-    return () => ctx.revert();
+    if (document.readyState === 'complete') {
+      initCertificates();
+    } else {
+      window.addEventListener('load', initCertificates);
+    }
+
+    return () => {
+      isCleanedUp = true;
+      window.removeEventListener('load', initCertificates);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (
