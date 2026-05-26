@@ -10,7 +10,7 @@ My personal portfolio built from scratch. No templates, no themes — just me fi
 
 The site is structured as a single-page app with a dedicated `/certificates` route. Every section is its own component — Hero, About, Experience, Projects, Certificates, Contact — all wired together in `Home.jsx`.
 
-The animation layer runs on GSAP + ScrollTrigger. Smooth scrolling is handled by Lenis. The hero background is a custom WebGL hyperspeed effect built with Three.js. Hover interactions on the cert cards are done with raw GSAP transforms — no CSS transitions fighting each other.
+The animation layer runs on GSAP + ScrollTrigger. Smooth scrolling is handled by Lenis. The hero background is a custom WebGL hyperspeed effect. Hover interactions on the cert cards are done with raw GSAP transforms — no CSS transitions fighting each other.
 
 Light and dark mode both work properly. The theme is stored in context and toggled via a class on `<html>`.
 
