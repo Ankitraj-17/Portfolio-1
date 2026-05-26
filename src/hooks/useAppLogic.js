@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,6 +7,23 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export function useAppLogic() {
+  const location = useLocation();
+
+  // Scroll to top on route change, unless there's a hash
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo(0, 0);
+    } else {
+      // If there's a hash, scroll to that section
+      setTimeout(() => {
+        const id = location.hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     // Lenis smooth scroll — tuned for buttery 60fps on all devices
