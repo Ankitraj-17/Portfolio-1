@@ -1,16 +1,50 @@
-# React + Vite
+# Ankit Raj — Personal Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live →** [ankitraj-portfolio1-67.vercel.app](https://ankitraj-portfolio1-67.vercel.app/)
 
-Currently, two official plugins are available:
+My personal portfolio built from scratch. No templates, no themes — just me figuring out what looked good and what didn't across a hundred iterations. It's fast, smooth, and works on every device I've thrown it at.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## What's inside
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The site is structured as a single-page app with a dedicated `/certificates` route. Every section is its own component — Hero, About, Experience, Projects, Certificates, Contact — all wired together in `Home.jsx`.
 
-## Expanding the ESLint configuration
+The animation layer runs on GSAP + ScrollTrigger. Smooth scrolling is handled by Lenis. The hero background is a custom WebGL hyperspeed effect built with Three.js. Hover interactions on the cert cards are done with raw GSAP transforms — no CSS transitions fighting each other.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Light and dark mode both work properly. The theme is stored in context and toggled via a class on `<html>`.
+
+---
+
+## Tech stack
+
+| Thing | Why |
+|---|---|
+| React 19 + Vite | Fast dev server, fast builds |
+| Tailwind CSS | Utility classes for layout, custom CSS for the rest |
+| GSAP + ScrollTrigger | Scroll animations that actually feel good |
+| Lenis | Smooth scroll without the jank |
+| Three.js + R3F | WebGL hero background |
+| Framer Motion | A few transition effects |
+| React Router v7 | Client-side routing |
+| EmailJS | Contact form without a backend |
+| Lucide React | Icons |
+
+---
+
+
+## Project structure
+
+```
+src/
+├── components/       # All sections (Hero, About, Projects, etc.)
+├── contexts/         # ThemeContext for light/dark mode
+├── data/             # Certificate data
+├── hooks/            # useAppLogic — all scroll/animation setup lives here
+├── pages/            # Home and AllCertificates page
+└── index.css         # Global styles and CSS variables
+```
+---
+
+
+> Built and designed by **Ankitraj Jha**
