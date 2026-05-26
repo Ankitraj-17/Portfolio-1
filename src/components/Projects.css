@@ -1,0 +1,146 @@
+/* Projects Section Stylesheet */
+
+#projects {
+  position: relative;
+  border-top: 1px solid var(--border);
+  z-index: 10;
+}
+
+/* Device Mockups Layout and Shadows */
+.device-card-container {
+  display: block;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Browser Chrome Mockup Style */
+.browser-mockup {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 
+    0 15px 35px -5px rgba(0, 0, 0, 0.04),
+    0 5px 15px -5px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.browser-header {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.browser-header span {
+  transition: opacity 0.3s ease;
+}
+
+.browser-mockup:hover .browser-header span {
+  opacity: 1;
+}
+
+/* Tablet Device Mockup Style */
+.tablet-mockup {
+  background: #1c1c1b;
+  border: 12px solid #161615;
+  border-radius: 32px;
+  box-shadow: 
+    0 20px 45px -10px rgba(0, 0, 0, 0.07),
+    0 10px 20px -10px rgba(0, 0, 0, 0.04),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Mouse spotlight glow layer */
+.card-spotlight {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 30;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Hover highlights for active state cards */
+.device-card-container:hover .browser-mockup {
+  box-shadow: 
+    0 35px 70px -15px rgba(185, 43, 39, 0.12),
+    0 15px 30px -10px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border-color: rgba(185, 43, 39, 0.15);
+  transform: translateY(-4px);
+}
+
+.device-card-container:hover .tablet-mockup {
+  box-shadow: 
+    0 40px 80px -15px rgba(185, 43, 39, 0.14),
+    0 20px 40px -10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+
+.dark .device-card-container:hover .browser-mockup {
+  box-shadow: 
+    0 35px 70px -15px rgba(185, 43, 39, 0.2),
+    0 15px 30px -10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dark .device-card-container:hover .tablet-mockup {
+  box-shadow: 
+    0 40px 80px -15px rgba(185, 43, 39, 0.22),
+    0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.browser-mockup,
+.tablet-mockup {
+  transition: box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease;
+}
+
+/* Image zoom viewport configurations */
+.project-img {
+  transform: scale(1) translate3d(0, 0, 0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.device-card-container:hover .project-img {
+  transform: scale(1.025);
+}
+
+/* Button & Arrow Icon Slide Translations */
+.btn-primary svg,
+.btn-outline svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:hover svg {
+  transform: translate3d(3px, -3px, 0);
+}
+
+.btn-outline:hover svg {
+  transform: translate3d(4px, -4px, 0);
+}
+
+/* Micro-interaction lists details style */
+ul li span {
+  box-shadow: 0 2px 5px rgba(217, 79, 48, 0.05);
+}
+
+/* Performance and Render optimization configurations removed to prevent GSAP ScrollTrigger jumping */
+
+@media (max-width: 768px) {
+  .tablet-mockup {
+    border-width: 8px;
+    border-radius: 20px;
+  }
+}
