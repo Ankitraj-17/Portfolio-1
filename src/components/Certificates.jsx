@@ -60,18 +60,18 @@ const Certificates = () => {
         <div className="mb-16 md:mb-20 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-end">
           {/* Left: Label + Heading */}
           <div>
-            <p className="about-title-anim text-[10px] uppercase tracking-[0.32em] font-bold text-[var(--red)] mb-5 font-mono flex items-center gap-3">
+            <p className="cert-title-anim text-[10px] uppercase tracking-[0.32em] font-bold text-[var(--red)] mb-5 font-mono flex items-center gap-3">
               <span className="w-6 h-px bg-[var(--red)] inline-block" />
               Phase 04: Validation
             </p>
-            <h2 className="about-title-anim font-black text-[var(--cream)] tracking-tight leading-[1.0] font-display uppercase" style={{ fontSize: 'clamp(2.4rem, 4.5vw, 3.8rem)' }}>
+            <h2 className="cert-title-anim font-black text-[var(--cream)] tracking-tight leading-[1.0] font-display uppercase" style={{ fontSize: 'clamp(2.4rem, 4.5vw, 3.8rem)' }}>
               Earned &{' '}
               <span className="text-[var(--red)] font-hand lowercase italic tracking-normal" style={{ fontSize: '1.1em' }}>certified</span>.
             </h2>
           </div>
 
           {/* Right: Blurb + stat */}
-          <div className="about-title-anim flex flex-col gap-5">
+          <div className="cert-title-anim flex flex-col gap-5">
             <p className="text-[var(--c60)] text-sm leading-[1.85] font-medium">
               Certifications that validate <strong className="text-[var(--cream)] font-semibold">technical depth</strong> and{' '}
               <strong className="text-[var(--cream)] font-semibold">platform expertise</strong> — from algorithms to full-stack development.

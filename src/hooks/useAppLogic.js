@@ -103,6 +103,25 @@ export function useAppLogic() {
       );
     });
 
+    // Certificates section header — independent trigger at 80% so it fires early
+    gsap.utils.toArray('.cert-title-anim').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: i * 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    });
+
     // ── NEW GLOBAL MOTION UTILITIES ──
 
     // 1. Parallax Scroll Utility
