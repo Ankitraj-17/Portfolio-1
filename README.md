@@ -24,8 +24,6 @@ Light and dark mode both work properly. The theme is stored in context and toggl
 | Tailwind CSS | Utility classes for layout, custom CSS for the rest |
 | GSAP + ScrollTrigger | Scroll animations that actually feel good |
 | Lenis | Smooth scroll without the jank |
-| Three.js + R3F | WebGL hero background |
-| Framer Motion | A few transition effects |
 | React Router v7 | Client-side routing |
 | EmailJS | Contact form without a backend |
 | Lucide React | Icons |
