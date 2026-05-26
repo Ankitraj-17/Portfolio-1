@@ -529,9 +529,12 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         this.container.addEventListener('mouseup', this.onMouseUp);
         this.container.addEventListener('mouseout', this.onMouseUp);
 
-        this.container.addEventListener('touchstart', this.onTouchStart, { passive: true });
-        this.container.addEventListener('touchend', this.onTouchEnd, { passive: true });
-        this.container.addEventListener('touchcancel', this.onTouchEnd, { passive: true });
+        // Only attach touch speed-up listeners on desktop — on mobile they block page scroll
+        if (!this.isMobileDevice) {
+          this.container.addEventListener('touchstart', this.onTouchStart, { passive: true });
+          this.container.addEventListener('touchend', this.onTouchEnd, { passive: true });
+          this.container.addEventListener('touchcancel', this.onTouchEnd, { passive: true });
+        }
 
         this.container.addEventListener('contextmenu', this.onContextMenu);
 
