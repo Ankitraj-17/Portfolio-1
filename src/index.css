@@ -120,10 +120,19 @@
 
 html {
   /* DO NOT set scroll-behavior:smooth — Lenis handles all smooth scrolling */
-  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(227, 83, 66, 0.35) transparent;
-  overscroll-behavior: none;
+}
+
+/* Lenis required CSS for proper native fallback */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
@@ -134,11 +143,8 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  overscroll-behavior: none;
+  overflow-x: clip;
   position: relative;
-  cursor: auto !important;
-  touch-action: pan-y;
   /* GPU-promote the scroll layer for smooth compositing */
   -webkit-overflow-scrolling: touch;
 }
