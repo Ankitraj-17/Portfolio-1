@@ -34,8 +34,8 @@ export function useAppLogic() {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      smoothTouch: true,       // Enable smooth touch on mobile
-      touchMultiplier: 2.2,
+      smoothTouch: false,      // Keep native touch scroll on mobile — smoothTouch can conflict with WebGL canvas
+      touchMultiplier: 2.0,
       wheelMultiplier: 1.0,
       infinite: false,
     });

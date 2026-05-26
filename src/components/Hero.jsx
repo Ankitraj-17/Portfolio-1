@@ -421,7 +421,7 @@ const Hero = () => {
       style={{ background: 'var(--bg)' }}
     >
       {/* ── Hyperspeed WebGL Background ── */}
-      <div className="absolute inset-0 z-0 pointer-events-auto">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Hyperspeed effectOptions={hyperspeedOptions} />
       </div>
 
