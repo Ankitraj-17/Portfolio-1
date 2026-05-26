@@ -124,7 +124,6 @@ html {
   scrollbar-width: thin;
   scrollbar-color: rgba(227, 83, 66, 0.35) transparent;
   overscroll-behavior: none;
-  height: 100%;
 }
 
 body {
