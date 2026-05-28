@@ -361,7 +361,7 @@ const About = () => {
                 </div>
                 
                 {/* Polaroid portrait */}
-                <div className="about-polaroid-parallax flex flex-col items-center flex-shrink-0 relative group/img-wrapper z-10 w-fit">
+                <div className="about-polaroid-parallax flex flex-col items-center flex-shrink-0 relative group/img-wrapper z-10 w-fit mt-8 md:mt-0">
                   {/* Skeuomorphic Brutalist Tape */}
                   <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 w-20 h-6 bg-amber-100/35 dark:bg-amber-950/10 backdrop-blur-[1px] border-l border-r border-black/[0.02] dark:border-white/[0.02] shadow-[0_1px_2px_rgba(0,0,0,0.01)] rotate-[-4deg] z-25 pointer-events-none" />
                   
