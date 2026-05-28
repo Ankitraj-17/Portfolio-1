@@ -145,7 +145,6 @@ const About = () => {
         // 2. Polaroid Portrait scroll parallax
         gsap.to('.about-polaroid-parallax', {
           y: -40,
-          rotate: 3,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top bottom',
