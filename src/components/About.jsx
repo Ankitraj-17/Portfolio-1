@@ -367,10 +367,10 @@ const About = () => {
                   <div className="absolute top-[-14px] left-1/2 -translate-x-1/2 w-20 h-6 bg-amber-100/35 dark:bg-amber-950/10 backdrop-blur-[1px] border-l border-r border-black/[0.02] dark:border-white/[0.02] shadow-[0_1px_2px_rgba(0,0,0,0.01)] rotate-[-4deg] z-25 pointer-events-none" />
                   
                   {/* 3D Offset Brutalist Outline */}
-                  <div className="absolute -inset-2 border border-dashed border-[var(--red)]/20 rounded-[2.2rem] -z-0 pointer-events-none transition-all duration-500 group-hover/img-wrapper:scale-[1.01] group-hover/img-wrapper:border-[var(--red)]/35" />
+                  <div className="absolute -inset-2 border border-dashed border-[var(--red)]/25 rounded-2xl -z-0 pointer-events-none transition-all duration-500 group-hover/img-wrapper:scale-[1.02] group-hover/img-wrapper:border-[var(--red)]/45" />
 
                   {/* Polaroid Frame Card */}
-                  <div className="w-[220px] md:w-[230px] p-3.5 pb-6 rounded-2xl border border-[var(--c20)] bg-white dark:bg-zinc-900 shadow-2xl z-10 transition-all duration-500 group-hover/img-wrapper:translate-y-[-6px] group-hover/img-wrapper:rotate-[1deg] flex flex-col items-center">
+                  <div className="w-[220px] md:w-[230px] p-3.5 pb-6 rounded-2xl border border-[var(--c20)] bg-white dark:bg-zinc-900 shadow-2xl z-10 transition-all duration-500 group-hover/img-wrapper:translate-y-[-8px] flex flex-col items-center">
                     <div className="w-full aspect-square rounded-lg overflow-hidden relative border border-black/5 bg-[var(--surface)]">
                       {/* Photo overlay glass glare */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/20 z-10 opacity-0 group-hover/img-wrapper:opacity-100 transition-opacity duration-700 pointer-events-none" />
